@@ -28,28 +28,14 @@
                 "uid": "P1809F7CD0C757532"
             },
             "gridPos": {
-                "h": 20,
-                "w": 24,
+                "h": 8,
+                "w": 12,
                 "x": 0,
                 "y": 0
             },
             "id": 1,
             "options": {
-                "footer": {
-                    "enablePagination": true,
-                    "fields": "",
-                    "reducer": [
-                        "sum"
-                    ],
-                    "show": false
-                },
-                "showHeader": true,
-                "sortBy": [
-                    {
-                        "desc": true,
-                        "displayName": "start"
-                    }
-                ]
+                "showHeader": true
             },
             "pluginVersion": "10.0.0",
             "targets": [
@@ -58,11 +44,11 @@
                         "type": "influxdb",
                         "uid": "P1809F7CD0C757532"
                     },
-                    "query": "from(bucket: \"recap_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"recap_data\")\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> drop(columns: [\"_start\", \"_stop\", \"_measurement\"])",
+                    "query": "from(bucket: \"recap_bucket\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"recap_data\")\n  |> limit(n: 10)",
                     "refId": "A"
                 }
             ],
-            "title": "Recap Data (CSV View)",
+            "title": "Debug: Raw Recap Data",
             "type": "table"
         }
     ],
@@ -74,13 +60,13 @@
         "list": []
     },
     "time": {
-        "from": "now-365d",
+        "from": "now-10y",
         "to": "now"
     },
     "timepicker": {},
     "timezone": "",
-    "title": "Global Report",
-    "uid": "global_report",
+    "title": "Debug Dashboard",
+    "uid": "debug_dashboard",
     "version": 1,
     "weekStart": ""
 }

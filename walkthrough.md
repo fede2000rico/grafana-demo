@@ -37,11 +37,31 @@ Deep dive into specific production runs.
 - **Data Generation**: verified `generate_data.py` created CSVs in `data/csv/`.
 - **Ingestion**: Verified `seeder` logs showing successful insertion into `grafana_bucket` and `recap_bucket`.
 - **Data Integrity**: Verified via Flux query that `recap_data` contains calculated stats and `run_data` contains high-frequency sensor tags.
+- **Verification Suite**: Created `tests/verify_influx_data.py` to programmatically validate data existence in InfluxDB. Run with:
+  ```bash
+  docker-compose run --rm -v $(pwd)/tests/verify_influx_data.py:/verify_influx_data.py --entrypoint /bin/sh seeder -c "pip install influxdb-client && python3 /verify_influx_data.py"
+  ```
 - **Grafana Provisioning**: Confirmed `Global Report` and `Job Details` are loaded in Grafana via API check.
 
+## Hard Reset & Recovery
+If issues persist, a full reset was performed to align Datasource UIDs:
+1. `docker-compose down`
+2. Deleted `grafana/dashboards/*.json` and `grafana/provisioning/datasources/datasources.yaml`
+3. Recreated configs with strict UID `P1809F7CD0C757532`.
+4. `docker-compose up -d`
+
 ## Visual Verification
-![Global Report Dashboard](/Users/federicopiol/.gemini/antigravity/brain/538f7464-58de-4365-b0f1-8b06de1b6ed7/global_report_after_wait_1765982937864.png)
-![Job Details Zoomed](/Users/federicopiol/.gemini/antigravity/brain/538f7464-58de-4365-b0f1-8b06de1b6ed7/job_details_final_zoomed_attempt3_1765983457693.png)
+### Table-Centric Design (Implemented)
+As requested, the dashboards have been simplified to raw data tables mimicking the CSV structure.
+
+**Global Recap Table**
+![Global Recap Table](/Users/federicopiol/.gemini/antigravity/brain/538f7464-58de-4365-b0f1-8b06de1b6ed7/global_table_view_1765985999072.png)
+
+**Job Run Data Table** (Selector Enabled)
+![Job Run Data Table](/Users/federicopiol/.gemini/antigravity/brain/538f7464-58de-4365-b0f1-8b06de1b6ed7/verify_job_table_fix_1765986176497.webp)
+
+> [!NOTE]
+> The "No Data" issue in Job Details was caused by a case-sensitivity mismatch (`job_id` vs `JobId`) in the InfluxDB tags, which has been resolved in the dashboard query.
 
 ## Usage
 1. **Start Services**: `docker-compose up -d`
