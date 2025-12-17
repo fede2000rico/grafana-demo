@@ -12,110 +12,124 @@ INFLUX_TOKEN = "my-super-secret-auth-token"
 INFLUX_ORG = "grafana_org"
 INFLUX_BUCKET = "grafana_bucket"
 INFLUX_RECAP_BUCKET = "recap_bucket"
-CSV_BASE_DIR = '/data/csv'
 
-# Configurable list of columns to strictly treat as Tags (strings)
-# All other non-numeric columns will be treated as String Fields or Tags based on logic below
-TAG_COLUMNS = ['job_id', 'job_name', 'status', 'step_name', 'log_level']
-TIME_COLUMNS = ['start_time', 'timestamp', 'time']
+# Output directory from generating script
+CSV_RUNS_DIR = '/data/csv/output_runs'
+CSV_RECAP_FILE = '/data/csv/recap.csv'
 
-def ensure_bucket(client, bucket_name):
+# Tags for Run Data
+RUN_TAGS = ['RecipeId', 'JobId', 'RunId', 'Severity', 'Name']
+# Everything else in Run Data is a field (unless empty)
+
+def ensure_buckets(client):
     buckets_api = client.buckets_api()
-    bucket = buckets_api.find_bucket_by_name(bucket_name)
-    if bucket:
-        print(f"Bucket '{bucket_name}' already exists.")
-    else:
-        org_api = client.organizations_api()
-        org = org_api.find_organizations(org=INFLUX_ORG)[0]
-        buckets_api.create_bucket(bucket_name=bucket_name, org_id=org.id)
-        print(f"Created bucket '{bucket_name}'.")
+    org_api = client.organizations_api()
+    org = org_api.find_organizations(org=INFLUX_ORG)[0]
+    
+    for bucket_name in [INFLUX_BUCKET, INFLUX_RECAP_BUCKET]:
+        bucket = buckets_api.find_bucket_by_name(bucket_name)
+        if bucket:
+            print(f"Bucket '{bucket_name}' already exists.")
+        else:
+            buckets_api.create_bucket(bucket_name=bucket_name, org_id=org.id)
+            print(f"Created bucket '{bucket_name}'.")
 
-def parse_time(row):
-    for tc in TIME_COLUMNS:
-        if tc in row:
-            try:
-                return datetime.fromisoformat(row[tc])
-            except ValueError:
-                pass
-    return datetime.utcnow()
+def parse_time(val):
+    try:
+        return datetime.fromisoformat(val)
+    except:
+        return datetime.utcnow() # Fallback
 
-def write_csv_to_influx(write_api, file_path, measurement_name, bucket_name=INFLUX_BUCKET, extra_tags=None):
-    if extra_tags is None:
-        extra_tags = {}
-        
-    print(f"Seeding {measurement_name} from {file_path}...")
-    with open(file_path, 'r') as f:
-        reader = csv.DictReader(f)
+def seed_runs(write_api):
+    run_files = glob.glob(os.path.join(CSV_RUNS_DIR, '*.csv'))
+    print(f"Found {len(run_files)} run files in {CSV_RUNS_DIR}...")
+    
+    for file_path in run_files:
         points = []
+        with open(file_path, 'r') as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                try:
+                    timestamp = parse_time(row['Timestamp'])
+                    point = Point("run_data").time(timestamp, WritePrecision.NS)
+                    
+                    # Add Tags
+                    for tag in RUN_TAGS:
+                        if row.get(tag):
+                            point.tag(tag, row[tag])
+                    
+                    # Add Fields
+                    for k, v in row.items():
+                        if k not in RUN_TAGS and k != 'Timestamp':
+                            if v and v != '':
+                                try:
+                                    # Try float/int
+                                    point.field(k, float(v))
+                                except ValueError:
+                                    # Text string
+                                    point.field(k, v)
+                    
+                    points.append(point)
+                except Exception as e:
+                    print(f"Error parsing row: {e}")
+        
+        if points:
+            # Write in chunks
+            chunk_size = 2000
+            for i in range(0, len(points), chunk_size):
+                write_api.write(bucket=INFLUX_BUCKET, org=INFLUX_ORG, record=points[i:i+chunk_size])
+            print(f"  Processed {file_path}: {len(points)} points")
+
+def seed_recap(write_api):
+    if not os.path.exists(CSV_RECAP_FILE):
+        print(f"Recap file not found: {CSV_RECAP_FILE}")
+        return
+
+    print("Seeding recap data...")
+    points = []
+    with open(CSV_RECAP_FILE, 'r') as f:
+        reader = csv.DictReader(f)
         for row in reader:
             try:
-                timestamp = parse_time(row)
+                # Use 'start' as timestamp
+                timestamp = parse_time(row['start'])
+                point = Point("recap_data").time(timestamp, WritePrecision.NS)
                 
-                point = Point(measurement_name).time(timestamp, WritePrecision.NS)
+                # Tags
+                point.tag('job_id', row['job_id'])
+                point.tag('run_id', row['run_id'])
+                point.tag('recipe_id', row['recipe_id'])
                 
-                # Add extra tags (e.g. from filename)
-                for k, v in extra_tags.items():
-                    point.tag(k, v)
-                
-                for col, val in row.items():
-                    # Skip time columns
-                    if col in TIME_COLUMNS:
-                        continue
-                        
-                    # Skip empty values
-                    if val is None or val == '':
-                        continue
-
-                    # Decisions: Tag or Field?
-                    if col in TAG_COLUMNS:
-                        point.tag(col, val)
-                    else:
-                        # Try parsing as number
-                        try:
-                            # Try int first
-                            num_val = int(val)
-                            point.field(col, num_val)
-                        except ValueError:
+                # Fields (everything else)
+                for k, v in row.items():
+                    if k not in ['job_id', 'run_id', 'recipe_id', 'start', 'end']:
+                        if v and v != '':
                             try:
-                                num_val = float(val)
-                                point.field(col, num_val)
+                                point.field(k, float(v))
                             except ValueError:
-                                # Fallback to string field
-                                point.field(col, val)
+                                point.field(k, v) # String field like 'all_error_names'
                 
                 points.append(point)
             except Exception as e:
-                print(f"Error parsing row in {file_path}: {e}")
+                print(f"Error parsing recap row: {e}")
 
-        if points:
-            write_api.write(bucket=bucket_name, org=INFLUX_ORG, record=points)
-            print(f"Inserted {len(points)} points into '{measurement_name}' measurement in '{bucket_name}'.")
-
-def seed_recap(write_api):
-    recap_file = os.path.join(CSV_BASE_DIR, 'recap.csv')
-    if os.path.exists(recap_file):
-        write_csv_to_influx(write_api, recap_file, "recap", bucket_name=INFLUX_RECAP_BUCKET)
-
-def seed_job_details(write_api):
-    job_files = glob.glob(os.path.join(CSV_BASE_DIR, 'job_details', '*.csv'))
-    print(f"Found {len(job_files)} job detail files.")
-    
-    for file_path in job_files:
-        job_id = os.path.basename(file_path).replace('.csv', '')
-        # Pass job_id as an extra tag since it might not be in the CSV content
-        write_csv_to_influx(write_api, file_path, "job_details", extra_tags={'job_id': job_id})
+    if points:
+        write_api.write(bucket=INFLUX_RECAP_BUCKET, org=INFLUX_ORG, record=points)
+        print(f"Seeded {len(points)} recap rows.")
 
 if __name__ == "__main__":
-    print("Starting Dynamic InfluxDB seed...")
+    print("Starting InfluxDB seed (New Schema)...")
     client = InfluxDBClient(url=INFLUX_URL, token=INFLUX_TOKEN, org=INFLUX_ORG)
     
     try:
-        ensure_bucket(client, INFLUX_RECAP_BUCKET)
+        ensure_buckets(client)
         write_api = client.write_api(write_options=SYNCHRONOUS)
+        
+        seed_runs(write_api)
         seed_recap(write_api)
-        seed_job_details(write_api)
-        print("InfluxDB seed completed successfully.")
+        
+        print("Completed.")
     except Exception as e:
-        print(f"Error seeding InfluxDB: {e}")
+        print(f"Fatal Error: {e}")
     finally:
         client.close()

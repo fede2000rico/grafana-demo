@@ -1,66 +1,508 @@
 {
-    "title": "Job Details",
-    "uid": "job_details",
-    "templating": {
+    "annotations": {
         "list": [
             {
-                "name": "job_id",
-                "datasource": "InfluxDB",
-                "query": "import \"influxdata/influxdb/schema\"\nschema.tagValues(bucket: \"grafana_bucket\", tag: \"job_id\")",
-                "type": "query",
-                "refresh": 1,
-                "label": "Job ID"
+                "builtIn": 1,
+                "datasource": {
+                    "type": "grafana",
+                    "uid": "-- Grafana --"
+                },
+                "enable": true,
+                "hide": true,
+                "iconColor": "rgba(0, 211, 255, 1)",
+                "name": "Annotations & Alerts",
+                "type": "dashboard"
+            },
+            {
+                "datasource": {
+                    "type": "influxdb",
+                    "uid": "P1809F7CD0C757532"
+                },
+                "enable": true,
+                "iconColor": "red",
+                "name": "Errors",
+                "query": "from(bucket: \"grafana_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"run_data\")\n  |> filter(fn: (r) => r[\"job_id\"] == \"${job_id}\")\n  |> filter(fn: (r) => r[\"Severity\"] == \"Error\")\n  |> filter(fn: (r) => r[\"_field\"] == \"Text\")\n  |> rename(columns: {\"_value\": \"text\", \"Name\": \"title\"})",
+                "showIn": 0
+            },
+            {
+                "datasource": {
+                    "type": "influxdb",
+                    "uid": "P1809F7CD0C757532"
+                },
+                "enable": true,
+                "iconColor": "yellow",
+                "name": "Warnings",
+                "query": "from(bucket: \"grafana_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"run_data\")\n  |> filter(fn: (r) => r[\"job_id\"] == \"${job_id}\")\n  |> filter(fn: (r) => r[\"Severity\"] == \"Warning\")\n  |> filter(fn: (r) => r[\"_field\"] == \"Text\")\n  |> rename(columns: {\"_value\": \"text\", \"Name\": \"title\"})",
+                "showIn": 0
             }
         ]
     },
+    "editable": true,
+    "fiscalYearStartMonth": 0,
+    "graphTooltip": 0,
+    "id": null,
+    "links": [],
+    "liveNow": false,
     "panels": [
         {
-            "type": "timeseries",
-            "title": "Metric A",
-            "gridPos": {
-                "x": 0,
-                "y": 0,
-                "w": 12,
-                "h": 8
+            "datasource": {
+                "type": "influxdb",
+                "uid": "P1809F7CD0C757532"
             },
-            "targets": [
-                {
-                    "datasource": "InfluxDB",
-                    "query": "from(bucket: \"grafana_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"job_details\")\n  |> filter(fn: (r) => r[\"job_id\"] == \"${job_id}\")\n  |> filter(fn: (r) => r[\"_field\"] == \"metric_a\")"
-                }
-            ]
-        },
-        {
-            "type": "timeseries",
-            "title": "Metric B",
-            "gridPos": {
-                "x": 12,
-                "y": 0,
-                "w": 12,
-                "h": 8
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "fixed",
+                        "fixedColor": "green"
+                    },
+                    "custom": {
+                        "fillOpacity": 70,
+                        "lineWidth": 0,
+                        "spanNulls": false
+                    },
+                    "mappings": [
+                        {
+                            "options": {
+                                "0": {
+                                    "color": "gray",
+                                    "index": 0,
+                                    "text": "Idle"
+                                },
+                                "4": {
+                                    "color": "green",
+                                    "index": 1,
+                                    "text": "Production"
+                                },
+                                "5": {
+                                    "color": "blue",
+                                    "index": 2,
+                                    "text": "Cooling"
+                                }
+                            },
+                            "type": "value"
+                        }
+                    ],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    }
+                },
+                "overrides": []
             },
-            "targets": [
-                {
-                    "datasource": "InfluxDB",
-                    "query": "from(bucket: \"grafana_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"job_details\")\n  |> filter(fn: (r) => r[\"job_id\"] == \"${job_id}\")\n  |> filter(fn: (r) => r[\"_field\"] == \"metric_b\")"
-                }
-            ]
-        },
-        {
-            "type": "table",
-            "title": "Job Logs",
             "gridPos": {
-                "x": 0,
-                "y": 8,
+                "h": 6,
                 "w": 24,
-                "h": 10
+                "x": 0,
+                "y": 0
             },
+            "id": 1,
+            "options": {
+                "alignValue": "center",
+                "legend": {
+                    "displayMode": "list",
+                    "placement": "bottom",
+                    "showLegend": true
+                },
+                "mergeValues": true,
+                "rowHeight": 0.9,
+                "showValue": "auto",
+                "tooltip": {
+                    "mode": "single",
+                    "sort": "none"
+                }
+            },
+            "pluginVersion": "10.0.0",
             "targets": [
                 {
-                    "datasource": "InfluxDB",
-                    "query": "from(bucket: \"grafana_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"job_details\")\n  |> filter(fn: (r) => r[\"job_id\"] == \"${job_id}\")\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> keep(columns: [\"_time\", \"step_name\", \"log_level\", \"message\"])"
+                    "datasource": {
+                        "type": "influxdb",
+                        "uid": "P1809F7CD0C757532"
+                    },
+                    "query": "from(bucket: \"grafana_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"run_data\")\n  |> filter(fn: (r) => r[\"job_id\"] == \"${job_id}\")\n  |> filter(fn: (r) => r[\"_field\"] == \"Active_State_General_StaOperatingState\")\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)",
+                    "refId": "A"
                 }
-            ]
+            ],
+            "title": "Operating State Timeline",
+            "type": "state-timeline"
+        },
+        {
+            "datasource": {
+                "type": "influxdb",
+                "uid": "P1809F7CD0C757532"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "custom": {
+                        "axisCenteredZero": false,
+                        "axisColorMode": "text",
+                        "axisLabel": "",
+                        "axisPlacement": "auto",
+                        "barAlignment": 0,
+                        "drawStyle": "line",
+                        "fillOpacity": 10,
+                        "gradientMode": "none",
+                        "hideFrom": {
+                            "legend": false,
+                            "tooltip": false,
+                            "viz": false
+                        },
+                        "lineInterpolation": "linear",
+                        "lineWidth": 1,
+                        "pointSize": 5,
+                        "scaleDistribution": {
+                            "type": "linear"
+                        },
+                        "showPoints": "auto",
+                        "spanNulls": false,
+                        "stacking": {
+                            "group": "A",
+                            "mode": "none"
+                        },
+                        "thresholdsStyle": {
+                            "mode": "off"
+                        }
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    }
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 0,
+                "y": 6
+            },
+            "id": 2,
+            "options": {
+                "legend": {
+                    "calcs": [],
+                    "displayMode": "list",
+                    "placement": "bottom",
+                    "showLegend": true
+                },
+                "tooltip": {
+                    "mode": "single",
+                    "sort": "none"
+                }
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "influxdb",
+                        "uid": "P1809F7CD0C757532"
+                    },
+                    "query": "from(bucket: \"grafana_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"run_data\")\n  |> filter(fn: (r) => r[\"job_id\"] == \"${job_id}\")\n  |> filter(fn: (r) => r[\"_field\"] == \"Active_ActProcVal_All_MainDrive_ActTorquePercent\" or r[\"_field\"] == \"Active_ActProcVal_All_MainDrive_ActPower\" or r[\"_field\"] == \"Active_ActProcVal_All_MainDrive_ActSME\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
+                    "refId": "A"
+                }
+            ],
+            "title": "Torque / Power / SME",
+            "type": "timeseries"
+        },
+        {
+            "datasource": {
+                "type": "influxdb",
+                "uid": "P1809F7CD0C757532"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "custom": {
+                        "axisCenteredZero": false,
+                        "axisColorMode": "text",
+                        "axisLabel": "",
+                        "axisPlacement": "auto",
+                        "barAlignment": 0,
+                        "drawStyle": "line",
+                        "fillOpacity": 10,
+                        "gradientMode": "none",
+                        "hideFrom": {
+                            "legend": false,
+                            "tooltip": false,
+                            "viz": false
+                        },
+                        "lineInterpolation": "linear",
+                        "lineWidth": 1,
+                        "pointSize": 5,
+                        "scaleDistribution": {
+                            "type": "linear"
+                        },
+                        "showPoints": "auto",
+                        "spanNulls": false,
+                        "stacking": {
+                            "group": "A",
+                            "mode": "none"
+                        },
+                        "thresholdsStyle": {
+                            "mode": "off"
+                        }
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    }
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 12,
+                "y": 6
+            },
+            "id": 3,
+            "options": {
+                "legend": {
+                    "calcs": [],
+                    "displayMode": "list",
+                    "placement": "bottom",
+                    "showLegend": true
+                },
+                "tooltip": {
+                    "mode": "single",
+                    "sort": "none"
+                }
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "influxdb",
+                        "uid": "P1809F7CD0C757532"
+                    },
+                    "query": "from(bucket: \"grafana_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"run_data\")\n  |> filter(fn: (r) => r[\"job_id\"] == \"${job_id}\")\n  |> filter(fn: (r) => r[\"_field\"] == \"Active_ActProcVal_All_MainDrive_ActSpeed\" or r[\"_field\"] == \"Active_ActProcVal_All_Endplate_ActPressure\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
+                    "refId": "A"
+                }
+            ],
+            "title": "Speed / Pressure",
+            "type": "timeseries"
+        },
+        {
+            "datasource": {
+                "type": "influxdb",
+                "uid": "P1809F7CD0C757532"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "custom": {
+                        "hideFrom": {
+                            "legend": false,
+                            "tooltip": false,
+                            "viz": false
+                        }
+                    },
+                    "mappings": [
+                        {
+                            "options": {
+                                "state_0_time_s": {
+                                    "index": 0,
+                                    "text": "Idle"
+                                },
+                                "state_4_time_s": {
+                                    "index": 1,
+                                    "text": "Production"
+                                }
+                            },
+                            "type": "value"
+                        }
+                    ]
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 0,
+                "y": 14
+            },
+            "id": 4,
+            "options": {
+                "legend": {
+                    "displayMode": "list",
+                    "placement": "right",
+                    "showLegend": true
+                },
+                "pieType": "pie",
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "tooltip": {
+                    "mode": "single",
+                    "sort": "none"
+                }
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "influxdb",
+                        "uid": "P1809F7CD0C757532"
+                    },
+                    "query": "from(bucket: \"recap_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"recap_data\")\n  |> filter(fn: (r) => r[\"job_id\"] == \"${job_id}\")\n  |> filter(fn: (r) => r[\"_field\"] =~ /state_\\d+_time_s/)",
+                    "refId": "A"
+                }
+            ],
+            "title": "State Time Distribution",
+            "type": "piechart"
+        },
+        {
+            "datasource": {
+                "type": "influxdb",
+                "uid": "P1809F7CD0C757532"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "custom": {
+                        "axisCenteredZero": false,
+                        "axisColorMode": "text",
+                        "axisLabel": "",
+                        "axisPlacement": "auto",
+                        "barAlignment": 0,
+                        "drawStyle": "line",
+                        "fillOpacity": 0,
+                        "gradientMode": "none",
+                        "hideFrom": {
+                            "legend": false,
+                            "tooltip": false,
+                            "viz": false
+                        },
+                        "lineInterpolation": "linear",
+                        "lineWidth": 1,
+                        "pointSize": 5,
+                        "scaleDistribution": {
+                            "type": "linear"
+                        },
+                        "showPoints": "auto",
+                        "spanNulls": false,
+                        "stacking": {
+                            "group": "A",
+                            "mode": "none"
+                        },
+                        "thresholdsStyle": {
+                            "mode": "off"
+                        }
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    }
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 12,
+                "y": 14
+            },
+            "id": 5,
+            "options": {
+                "displayMode": "basic",
+                "minVizHeight": 10,
+                "minVizWidth": 0,
+                "orientation": "horizontal",
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "showUnfilled": true,
+                "valueMode": "color"
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "influxdb",
+                        "uid": "P1809F7CD0C757532"
+                    },
+                    "query": "from(bucket: \"grafana_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"run_data\")\n  |> filter(fn: (r) => r[\"job_id\"] == \"${job_id}\")\n  |> filter(fn: (r) => exists r[\"Severity\"])\n  |> group(columns: [\"Name\"])\n  |> count()",
+                    "refId": "A"
+                }
+            ],
+            "title": "Alarm/Event Counts",
+            "type": "bargauge"
         }
-    ]
+    ],
+    "refresh": "",
+    "schemaVersion": 38,
+    "style": "dark",
+    "tags": [],
+    "templating": {
+        "list": [
+            {
+                "current": {},
+                "datasource": {
+                    "type": "influxdb",
+                    "uid": "P1809F7CD0C757532"
+                },
+                "definition": "import \"influxdata/influxdb/schema\"\nschema.tagValues(bucket: \"recap_bucket\", tag: \"job_id\")",
+                "hide": 0,
+                "includeAll": false,
+                "label": "Job ID",
+                "multi": false,
+                "name": "job_id",
+                "options": [],
+                "query": "import \"influxdata/influxdb/schema\"\nschema.tagValues(bucket: \"recap_bucket\", tag: \"job_id\")",
+                "refresh": 1,
+                "regex": "",
+                "skipUrlSync": false,
+                "sort": 0,
+                "type": "query"
+            }
+        ]
+    },
+    "time": {
+        "from": "now-7d",
+        "to": "now"
+    },
+    "timepicker": {},
+    "timezone": "",
+    "title": "Job Details",
+    "uid": "job_details",
+    "version": 1,
+    "weekStart": ""
 }
