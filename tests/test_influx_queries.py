@@ -4,7 +4,7 @@ import os
 from influxdb_client import InfluxDBClient
 
 # Configuration - reusing environment variables or defaults
-INFLUX_URL = "http://localhost:8086"
+INFLUX_URL = os.environ.get("INFLUX_URL", "http://influxdb:8086")
 INFLUX_TOKEN = os.environ.get("INFLUX_TOKEN", "my-super-secret-auth-token")
 INFLUX_ORG = "grafana_org"
 RECAP_BUCKET = "recap_bucket"
