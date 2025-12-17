@@ -21,7 +21,7 @@
                 "enable": true,
                 "iconColor": "red",
                 "name": "Errors",
-                "query": "from(bucket: \"grafana_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"run_data\")\n  |> filter(fn: (r) => r[\"job_id\"] == \"${job_id}\")\n  |> filter(fn: (r) => r[\"Severity\"] == \"Error\")\n  |> filter(fn: (r) => r[\"_field\"] == \"Text\")\n  |> rename(columns: {\"_value\": \"text\", \"Name\": \"title\"})",
+                "query": "from(bucket: \"grafana_bucket\")\n  |> range(start: time(v: \"${job_start}\"), stop: time(v: \"${job_end}\"))\n  |> filter(fn: (r) => r[\"_measurement\"] == \"run_data\")\n  |> filter(fn: (r) => r[\"job_id\"] == \"${job_id}\")\n  |> filter(fn: (r) => r[\"Severity\"] == \"Error\")\n  |> filter(fn: (r) => r[\"_field\"] == \"Text\")\n  |> rename(columns: {\"_value\": \"text\", \"Name\": \"title\"})",
                 "showIn": 0
             },
             {
@@ -32,7 +32,7 @@
                 "enable": true,
                 "iconColor": "yellow",
                 "name": "Warnings",
-                "query": "from(bucket: \"grafana_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"run_data\")\n  |> filter(fn: (r) => r[\"job_id\"] == \"${job_id}\")\n  |> filter(fn: (r) => r[\"Severity\"] == \"Warning\")\n  |> filter(fn: (r) => r[\"_field\"] == \"Text\")\n  |> rename(columns: {\"_value\": \"text\", \"Name\": \"title\"})",
+                "query": "from(bucket: \"grafana_bucket\")\n  |> range(start: time(v: \"${job_start}\"), stop: time(v: \"${job_end}\"))\n  |> filter(fn: (r) => r[\"_measurement\"] == \"run_data\")\n  |> filter(fn: (r) => r[\"job_id\"] == \"${job_id}\")\n  |> filter(fn: (r) => r[\"Severity\"] == \"Warning\")\n  |> filter(fn: (r) => r[\"_field\"] == \"Text\")\n  |> rename(columns: {\"_value\": \"text\", \"Name\": \"title\"})",
                 "showIn": 0
             }
         ]
@@ -44,6 +44,21 @@
     "links": [],
     "liveNow": false,
     "panels": [
+        {
+            "gridPos": {
+                "h": 2,
+                "w": 24,
+                "x": 0,
+                "y": 0
+            },
+            "id": 10,
+            "options": {
+                "content": "<center>\n<a href=\"/d/job_details/job-details?orgId=1&var-job_id=${job_id}&from=${job_start}&to=${job_end}\" class=\"btn btn-primary\" style=\"color: white;\">Zoom to Job Duration</a>\n</center>",
+                "mode": "html"
+            },
+            "title": "Quick Actions",
+            "type": "text"
+        },
         {
             "datasource": {
                 "type": "influxdb",
@@ -98,7 +113,7 @@
                 "h": 6,
                 "w": 24,
                 "x": 0,
-                "y": 0
+                "y": 2
             },
             "id": 1,
             "options": {
@@ -123,7 +138,7 @@
                         "type": "influxdb",
                         "uid": "P1809F7CD0C757532"
                     },
-                    "query": "from(bucket: \"grafana_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"run_data\")\n  |> filter(fn: (r) => r[\"job_id\"] == \"${job_id}\")\n  |> filter(fn: (r) => r[\"_field\"] == \"Active_State_General_StaOperatingState\")\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)",
+                    "query": "from(bucket: \"grafana_bucket\")\n  |> range(start: time(v: \"${job_start}\"), stop: time(v: \"${job_end}\"))\n  |> filter(fn: (r) => r[\"_measurement\"] == \"run_data\")\n  |> filter(fn: (r) => r[\"job_id\"] == \"${job_id}\")\n  |> filter(fn: (r) => r[\"_field\"] == \"Active_State_General_StaOperatingState\")\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)",
                     "refId": "A"
                 }
             ],
@@ -187,7 +202,7 @@
                 "h": 8,
                 "w": 12,
                 "x": 0,
-                "y": 6
+                "y": 8
             },
             "id": 2,
             "options": {
@@ -209,7 +224,7 @@
                         "type": "influxdb",
                         "uid": "P1809F7CD0C757532"
                     },
-                    "query": "from(bucket: \"grafana_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"run_data\")\n  |> filter(fn: (r) => r[\"job_id\"] == \"${job_id}\")\n  |> filter(fn: (r) => r[\"_field\"] == \"Active_ActProcVal_All_MainDrive_ActTorquePercent\" or r[\"_field\"] == \"Active_ActProcVal_All_MainDrive_ActPower\" or r[\"_field\"] == \"Active_ActProcVal_All_MainDrive_ActSME\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
+                    "query": "from(bucket: \"grafana_bucket\")\n  |> range(start: time(v: \"${job_start}\"), stop: time(v: \"${job_end}\"))\n  |> filter(fn: (r) => r[\"_measurement\"] == \"run_data\")\n  |> filter(fn: (r) => r[\"job_id\"] == \"${job_id}\")\n  |> filter(fn: (r) => r[\"_field\"] == \"Active_ActProcVal_All_MainDrive_ActTorquePercent\" or r[\"_field\"] == \"Active_ActProcVal_All_MainDrive_ActPower\" or r[\"_field\"] == \"Active_ActProcVal_All_MainDrive_ActSME\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
                     "refId": "A"
                 }
             ],
@@ -273,7 +288,7 @@
                 "h": 8,
                 "w": 12,
                 "x": 12,
-                "y": 6
+                "y": 8
             },
             "id": 3,
             "options": {
@@ -295,7 +310,7 @@
                         "type": "influxdb",
                         "uid": "P1809F7CD0C757532"
                     },
-                    "query": "from(bucket: \"grafana_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"run_data\")\n  |> filter(fn: (r) => r[\"job_id\"] == \"${job_id}\")\n  |> filter(fn: (r) => r[\"_field\"] == \"Active_ActProcVal_All_MainDrive_ActSpeed\" or r[\"_field\"] == \"Active_ActProcVal_All_Endplate_ActPressure\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
+                    "query": "from(bucket: \"grafana_bucket\")\n  |> range(start: time(v: \"${job_start}\"), stop: time(v: \"${job_end}\"))\n  |> filter(fn: (r) => r[\"_measurement\"] == \"run_data\")\n  |> filter(fn: (r) => r[\"job_id\"] == \"${job_id}\")\n  |> filter(fn: (r) => r[\"_field\"] == \"Active_ActProcVal_All_MainDrive_ActSpeed\" or r[\"_field\"] == \"Active_ActProcVal_All_Endplate_ActPressure\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
                     "refId": "A"
                 }
             ],
@@ -341,7 +356,7 @@
                 "h": 8,
                 "w": 12,
                 "x": 0,
-                "y": 14
+                "y": 16
             },
             "id": 4,
             "options": {
@@ -370,7 +385,7 @@
                         "type": "influxdb",
                         "uid": "P1809F7CD0C757532"
                     },
-                    "query": "from(bucket: \"recap_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"recap_data\")\n  |> filter(fn: (r) => r[\"job_id\"] == \"${job_id}\")\n  |> filter(fn: (r) => r[\"_field\"] =~ /state_\\d+_time_s/)",
+                    "query": "from(bucket: \"recap_bucket\")\n  |> range(start: time(v: \"${job_start}\"), stop: time(v: \"${job_end}\"))\n  |> filter(fn: (r) => r[\"_measurement\"] == \"recap_data\")\n  |> filter(fn: (r) => r[\"job_id\"] == \"${job_id}\")\n  |> filter(fn: (r) => r[\"_field\"] =~ /state_\\d+_time_s/)",
                     "refId": "A"
                 }
             ],
@@ -434,7 +449,7 @@
                 "h": 8,
                 "w": 12,
                 "x": 12,
-                "y": 14
+                "y": 16
             },
             "id": 5,
             "options": {
@@ -459,7 +474,7 @@
                         "type": "influxdb",
                         "uid": "P1809F7CD0C757532"
                     },
-                    "query": "from(bucket: \"grafana_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"run_data\")\n  |> filter(fn: (r) => r[\"job_id\"] == \"${job_id}\")\n  |> filter(fn: (r) => exists r[\"Severity\"])\n  |> group(columns: [\"Name\"])\n  |> count()",
+                    "query": "from(bucket: \"grafana_bucket\")\n  |> range(start: time(v: \"${job_start}\"), stop: time(v: \"${job_end}\"))\n  |> filter(fn: (r) => r[\"_measurement\"] == \"run_data\")\n  |> filter(fn: (r) => r[\"job_id\"] == \"${job_id}\")\n  |> filter(fn: (r) => exists r[\"Severity\"])\n  |> group(columns: [\"Name\"])\n  |> count()",
                     "refId": "A"
                 }
             ],
@@ -492,11 +507,49 @@
                 "skipUrlSync": false,
                 "sort": 0,
                 "type": "query"
+            },
+            {
+                "datasource": {
+                    "type": "influxdb",
+                    "uid": "P1809F7CD0C757532"
+                },
+                "definition": "from(bucket: \"recap_bucket\")\n  |> range(start: -90d)\n  |> filter(fn: (r) => r[\"job_id\"] == \"${job_id}\")\n  |> filter(fn: (r) => r[\"_field\"] == \"start\")\n  |> last()\n  |> keep(columns: [\"_value\"])",
+                "hide": 2,
+                "includeAll": false,
+                "label": "Job Start",
+                "multi": false,
+                "name": "job_start",
+                "options": [],
+                "query": "from(bucket: \"recap_bucket\")\n  |> range(start: -90d)\n  |> filter(fn: (r) => r[\"job_id\"] == \"${job_id}\")\n  |> filter(fn: (r) => r[\"_field\"] == \"start\")\n  |> last()\n  |> keep(columns: [\"_value\"])",
+                "refresh": 1,
+                "regex": "",
+                "skipUrlSync": false,
+                "sort": 0,
+                "type": "query"
+            },
+            {
+                "datasource": {
+                    "type": "influxdb",
+                    "uid": "P1809F7CD0C757532"
+                },
+                "definition": "from(bucket: \"recap_bucket\")\n  |> range(start: -90d)\n  |> filter(fn: (r) => r[\"job_id\"] == \"${job_id}\")\n  |> filter(fn: (r) => r[\"_field\"] == \"end\")\n  |> last()\n  |> keep(columns: [\"_value\"])",
+                "hide": 2,
+                "includeAll": false,
+                "label": "Job End",
+                "multi": false,
+                "name": "job_end",
+                "options": [],
+                "query": "from(bucket: \"recap_bucket\")\n  |> range(start: -90d)\n  |> filter(fn: (r) => r[\"job_id\"] == \"${job_id}\")\n  |> filter(fn: (r) => r[\"_field\"] == \"end\")\n  |> last()\n  |> keep(columns: [\"_value\"])",
+                "refresh": 1,
+                "regex": "",
+                "skipUrlSync": false,
+                "sort": 0,
+                "type": "query"
             }
         ]
     },
     "time": {
-        "from": "now-7d",
+        "from": "now-30d",
         "to": "now"
     },
     "timepicker": {},

@@ -23,7 +23,8 @@ A high-level view of production efficiency and quality.
 
 ### 2. Job Details (`job.json`)
 Deep dive into specific production runs.
-- **Job ID Selection**: Dropdown to filter data by Job.
+- **Job ID Selection**: Dropdown to filter data by Job. The dashboard automatically fetches the job's *start* and *end* times to clip the data exactly to the run duration.
+- **Zoom to Job Button**: A dedicated button at the top that updates the dashboard's time range to match the selected Job's duration, ensuring perfect visibility.
 - **Operating State Timeline**: Visual timeline of the machine's state (Idle, Production, etc.) over the run.
 - **Process Values**: Time-series graphs for:
   - Torque, Power, SME
