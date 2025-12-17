@@ -102,12 +102,12 @@ def seed_recap(write_api):
                 
                 # Fields (everything else)
                 for k, v in row.items():
-                    if k not in ['job_id', 'run_id', 'recipe_id', 'start', 'end']:
+                    if k not in ['job_id', 'run_id', 'recipe_id']:
                         if v and v != '':
                             try:
                                 point.field(k, float(v))
                             except ValueError:
-                                point.field(k, v) # String field like 'all_error_names'
+                                point.field(k, v) # String field like 'all_error_names', 'start', 'end'
                 
                 points.append(point)
             except Exception as e:

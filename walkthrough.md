@@ -39,6 +39,10 @@ Deep dive into specific production runs.
 - **Data Integrity**: Verified via Flux query that `recap_data` contains calculated stats and `run_data` contains high-frequency sensor tags.
 - **Grafana Provisioning**: Confirmed `Global Report` and `Job Details` are loaded in Grafana via API check.
 
+## Visual Verification
+![Global Report Dashboard](/Users/federicopiol/.gemini/antigravity/brain/538f7464-58de-4365-b0f1-8b06de1b6ed7/global_report_after_wait_1765982937864.png)
+![Job Details Zoomed](/Users/federicopiol/.gemini/antigravity/brain/538f7464-58de-4365-b0f1-8b06de1b6ed7/job_details_final_zoomed_attempt3_1765983457693.png)
+
 ## Usage
 1. **Start Services**: `docker-compose up -d`
 2. **Access Grafana**: `http://localhost:3000` (Login is anonymous/Admin).

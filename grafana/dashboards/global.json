@@ -74,7 +74,7 @@
                         "type": "influxdb",
                         "uid": "P1809F7CD0C757532"
                     },
-                    "query": "from(bucket: \"recap_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"recap_data\")\n  |> filter(fn: (r) => r[\"_field\"] == \"duration_h\")\n  |> count()",
+                    "query": "from(bucket: \"recap_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"recap_data\")\n  |> filter(fn: (r) => r[\"_field\"] == \"duration_h\")\n  |> group()\n  |> count()",
                     "refId": "A"
                 }
             ],
@@ -137,7 +137,7 @@
                         "type": "influxdb",
                         "uid": "P1809F7CD0C757532"
                     },
-                    "query": "from(bucket: \"recap_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"recap_data\")\n  |> filter(fn: (r) => r[\"_field\"] == \"errors\")\n  |> sum()",
+                    "query": "from(bucket: \"recap_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"recap_data\")\n  |> filter(fn: (r) => r[\"_field\"] == \"errors\")\n  |> group()\n  |> sum()",
                     "refId": "A"
                 }
             ],
@@ -204,7 +204,7 @@
                         "type": "influxdb",
                         "uid": "P1809F7CD0C757532"
                     },
-                    "query": "from(bucket: \"recap_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"recap_data\")\n  |> filter(fn: (r) => r[\"_field\"] == \"warnings\")\n  |> sum()",
+                    "query": "from(bucket: \"recap_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"recap_data\")\n  |> filter(fn: (r) => r[\"_field\"] == \"warnings\")\n  |> group()\n  |> sum()",
                     "refId": "A"
                 }
             ],
@@ -457,7 +457,7 @@
         "list": []
     },
     "time": {
-        "from": "now-30d",
+        "from": "now-90d",
         "to": "now"
     },
     "timepicker": {},
