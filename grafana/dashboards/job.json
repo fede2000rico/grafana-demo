@@ -1,0 +1,66 @@
+{
+    "title": "Job Details",
+    "uid": "job_details",
+    "templating": {
+        "list": [
+            {
+                "name": "job_id",
+                "datasource": "InfluxDB",
+                "query": "import \"influxdata/influxdb/schema\"\nschema.tagValues(bucket: \"grafana_bucket\", tag: \"job_id\")",
+                "type": "query",
+                "refresh": 1,
+                "label": "Job ID"
+            }
+        ]
+    },
+    "panels": [
+        {
+            "type": "timeseries",
+            "title": "Metric A",
+            "gridPos": {
+                "x": 0,
+                "y": 0,
+                "w": 12,
+                "h": 8
+            },
+            "targets": [
+                {
+                    "datasource": "InfluxDB",
+                    "query": "from(bucket: \"grafana_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"job_details\")\n  |> filter(fn: (r) => r[\"job_id\"] == \"${job_id}\")\n  |> filter(fn: (r) => r[\"_field\"] == \"metric_a\")"
+                }
+            ]
+        },
+        {
+            "type": "timeseries",
+            "title": "Metric B",
+            "gridPos": {
+                "x": 12,
+                "y": 0,
+                "w": 12,
+                "h": 8
+            },
+            "targets": [
+                {
+                    "datasource": "InfluxDB",
+                    "query": "from(bucket: \"grafana_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"job_details\")\n  |> filter(fn: (r) => r[\"job_id\"] == \"${job_id}\")\n  |> filter(fn: (r) => r[\"_field\"] == \"metric_b\")"
+                }
+            ]
+        },
+        {
+            "type": "table",
+            "title": "Job Logs",
+            "gridPos": {
+                "x": 0,
+                "y": 8,
+                "w": 24,
+                "h": 10
+            },
+            "targets": [
+                {
+                    "datasource": "InfluxDB",
+                    "query": "from(bucket: \"grafana_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"job_details\")\n  |> filter(fn: (r) => r[\"job_id\"] == \"${job_id}\")\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> keep(columns: [\"_time\", \"step_name\", \"log_level\", \"message\"])"
+                }
+            ]
+        }
+    ]
+}

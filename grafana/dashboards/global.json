@@ -1,0 +1,54 @@
+{
+    "title": "Global Report",
+    "uid": "global_report",
+    "panels": [
+        {
+            "type": "stat",
+            "title": "Total Jobs",
+            "gridPos": {
+                "x": 0,
+                "y": 0,
+                "w": 8,
+                "h": 4
+            },
+            "targets": [
+                {
+                    "datasource": "InfluxDB",
+                    "query": "from(bucket: \"recap_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"recap\")\n  |> filter(fn: (r) => r[\"_field\"] == \"duration_seconds\")\n  |> count()"
+                }
+            ]
+        },
+        {
+            "type": "stat",
+            "title": "Failed Jobs",
+            "gridPos": {
+                "x": 8,
+                "y": 0,
+                "w": 8,
+                "h": 4
+            },
+            "targets": [
+                {
+                    "datasource": "InfluxDB",
+                    "query": "from(bucket: \"recap_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"recap\")\n  |> filter(fn: (r) => r[\"status\"] == \"FAILURE\")\n  |> filter(fn: (r) => r[\"_field\"] == \"duration_seconds\")\n  |> count()"
+                }
+            ]
+        },
+        {
+            "type": "table",
+            "title": "Job Overview",
+            "gridPos": {
+                "x": 0,
+                "y": 4,
+                "w": 24,
+                "h": 10
+            },
+            "targets": [
+                {
+                    "datasource": "InfluxDB",
+                    "query": "from(bucket: \"recap_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"recap\")\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")"
+                }
+            ]
+        }
+    ]
+}

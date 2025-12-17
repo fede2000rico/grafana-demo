@@ -1,0 +1,58 @@
+timestamp,step_name,metric_a_value,metric_b_value,log_level,message
+2025-11-20T20:03:45.219098,Initialization,17.45,24.14,INFO,Executing Initialization - processed chunk 5
+2025-11-20T20:04:03.219098,Initialization,32.85,27.26,ERROR,Executing Initialization - processed chunk 38
+2025-11-20T20:04:14.219098,Initialization,94.53,42.18,INFO,Executing Initialization - processed chunk 72
+2025-11-20T20:04:38.219098,Initialization,90.61,16.59,INFO,Executing Initialization - processed chunk 5
+2025-11-20T20:05:01.219098,Initialization,50.04,2.61,ERROR,Executing Initialization - processed chunk 82
+2025-11-20T20:05:23.219098,Initialization,8.87,46.64,INFO,Executing Initialization - processed chunk 26
+2025-11-20T20:05:49.219098,Initialization,81.85,5.00,INFO,Executing Initialization - processed chunk 6
+2025-11-20T20:06:09.219098,Initialization,90.75,32.79,INFO,Executing Initialization - processed chunk 45
+2025-11-20T20:06:34.219098,Initialization,91.19,1.54,ERROR,Executing Initialization - processed chunk 56
+2025-11-20T20:06:35.219098,Initialization,60.83,21.83,INFO,Executing Initialization - processed chunk 95
+2025-11-20T20:06:42.219098,Initialization,33.35,31.14,INFO,Executing Initialization - processed chunk 33
+2025-11-20T20:07:09.219098,Initialization,45.91,4.60,ERROR,Executing Initialization - processed chunk 52
+2025-11-20T20:07:15.219098,Initialization,27.06,24.21,ERROR,Executing Initialization - processed chunk 81
+2025-11-20T20:07:31.219098,Data Fetching,22.48,8.33,ERROR,Executing Data Fetching - processed chunk 20
+2025-11-20T20:07:47.219098,Data Fetching,76.14,3.94,ERROR,Executing Data Fetching - processed chunk 98
+2025-11-20T20:08:12.219098,Data Fetching,75.11,31.24,INFO,Executing Data Fetching - processed chunk 14
+2025-11-20T20:08:20.219098,Data Fetching,19.35,48.08,ERROR,Executing Data Fetching - processed chunk 13
+2025-11-20T20:08:23.219098,Data Fetching,41.13,9.00,INFO,Executing Data Fetching - processed chunk 26
+2025-11-20T20:08:31.219098,Data Fetching,21.03,27.64,INFO,Executing Data Fetching - processed chunk 9
+2025-11-20T20:08:48.219098,Data Fetching,32.79,1.72,INFO,Executing Data Fetching - processed chunk 17
+2025-11-20T20:09:11.219098,Data Fetching,17.53,3.70,INFO,Executing Data Fetching - processed chunk 89
+2025-11-20T20:09:19.219098,Data Fetching,73.79,13.66,INFO,Executing Data Fetching - processed chunk 20
+2025-11-20T20:09:44.219098,Data Fetching,62.74,36.98,INFO,Executing Data Fetching - processed chunk 41
+2025-11-20T20:10:05.219098,Data Fetching,56.16,40.31,INFO,Executing Data Fetching - processed chunk 14
+2025-11-20T20:10:10.219098,Data Fetching,76.39,15.92,INFO,Executing Data Fetching - processed chunk 59
+2025-11-20T20:10:25.219098,Data Fetching,11.51,28.43,INFO,Executing Data Fetching - processed chunk 3
+2025-11-20T20:10:27.219098,Data Fetching,82.71,26.23,ERROR,Executing Data Fetching - processed chunk 98
+2025-11-20T20:10:51.219098,Processing,48.54,5.44,ERROR,Executing Processing - processed chunk 32
+2025-11-20T20:11:07.219098,Processing,1.73,41.35,INFO,Executing Processing - processed chunk 25
+2025-11-20T20:11:33.219098,Processing,28.55,44.85,INFO,Executing Processing - processed chunk 47
+2025-11-20T20:11:40.219098,Processing,10.62,38.67,INFO,Executing Processing - processed chunk 68
+2025-11-20T20:11:43.219098,Processing,50.13,7.89,ERROR,Executing Processing - processed chunk 28
+2025-11-20T20:11:57.219098,Processing,33.55,1.97,INFO,Executing Processing - processed chunk 39
+2025-11-20T20:12:10.219098,Processing,0.66,17.37,INFO,Executing Processing - processed chunk 27
+2025-11-20T20:12:23.219098,Processing,67.22,20.64,INFO,Executing Processing - processed chunk 37
+2025-11-20T20:12:42.219098,Processing,51.16,36.92,INFO,Executing Processing - processed chunk 75
+2025-11-20T20:13:02.219098,Processing,4.91,29.92,INFO,Executing Processing - processed chunk 45
+2025-11-20T20:13:24.219098,Processing,17.07,46.97,INFO,Executing Processing - processed chunk 58
+2025-11-20T20:13:25.219098,Processing,9.60,49.63,INFO,Executing Processing - processed chunk 7
+2025-11-20T20:13:58.219098,Validation,55.22,49.75,INFO,Executing Validation - processed chunk 75
+2025-11-20T20:14:25.219098,Validation,78.54,44.79,INFO,Executing Validation - processed chunk 54
+2025-11-20T20:14:33.219098,Validation,4.53,46.02,INFO,Executing Validation - processed chunk 90
+2025-11-20T20:15:05.219098,Validation,17.50,22.44,INFO,Executing Validation - processed chunk 1
+2025-11-20T20:15:20.219098,Validation,71.84,32.77,INFO,Executing Validation - processed chunk 84
+2025-11-20T20:15:47.219098,Validation,48.74,17.62,INFO,Executing Validation - processed chunk 99
+2025-11-20T20:16:18.219098,Validation,20.81,14.03,INFO,Executing Validation - processed chunk 89
+2025-11-20T20:16:46.219098,Validation,54.93,47.76,INFO,Executing Validation - processed chunk 83
+2025-11-20T20:17:16.219098,Validation,6.11,0.59,INFO,Executing Validation - processed chunk 22
+2025-11-20T20:17:53.219098,Archiving,12.23,42.30,INFO,Executing Archiving - processed chunk 88
+2025-11-20T20:17:54.219098,Archiving,44.53,32.12,INFO,Executing Archiving - processed chunk 92
+2025-11-20T20:18:26.219098,Archiving,93.59,7.33,INFO,Executing Archiving - processed chunk 16
+2025-11-20T20:18:48.219098,Archiving,69.90,42.20,INFO,Executing Archiving - processed chunk 92
+2025-11-20T20:19:23.219098,Archiving,12.54,44.46,INFO,Executing Archiving - processed chunk 77
+2025-11-20T20:19:59.219098,Archiving,92.38,39.99,INFO,Executing Archiving - processed chunk 91
+2025-11-20T20:20:21.219098,Archiving,71.00,10.06,INFO,Executing Archiving - processed chunk 38
+2025-11-20T20:20:36.219098,Archiving,59.22,0.26,INFO,Executing Archiving - processed chunk 80
+2025-11-20T20:20:52.219098,Archiving,18.63,12.26,INFO,Executing Archiving - processed chunk 70

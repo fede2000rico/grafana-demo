@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  influxdb:
+    image: influxdb:2.7
+    container_name: influxdb
+    ports:
+      - "8086:8086"
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=admin
+      - DOCKER_INFLUXDB_INIT_PASSWORD=password123
+      - DOCKER_INFLUXDB_INIT_ORG=grafana_org
+      - DOCKER_INFLUXDB_INIT_BUCKET=grafana_bucket
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=my-super-secret-auth-token
+    volumes:
+      - influxdb_data:/var/lib/influxdb2
+    networks:
+      - grafana-net
+
+  grafana:
+    image: grafana/grafana-oss:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/dashboards:/etc/grafana/dashboards
+    networks:
+      - grafana-net
+    depends_on:
+      - influxdb
+
+  seeder:
+    image: python:3.9-slim
+    container_name: seeder
+    volumes:
+      - ./data/csv:/data/csv
+      - ./scripts:/scripts
+    command: >
+      sh -c "pip install influxdb-client && python /scripts/seed_influx.py"
+    networks:
+      - grafana-net
+    depends_on:
+      - influxdb
+
+networks:
+  grafana-net:
+    driver: bridge
+
+volumes:
+  influxdb_data:
